@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYV Launcher Gallery</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f6f7;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .selector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .selector button {
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      background-color: black;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      width: 260px;
+      max-width: 90vw;
+    }
+
+    .selector button:hover {
+      background-color: #292929;
+      transform: scale(1.03);
+    }
+
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 20px;
+      width: 100%;
+      max-width: 1400px;
+      box-sizing: border-box;
+    }
+
+    .video-card {
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .video-card:hover {
+      transform: scale(1.02);
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .downloads {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .downloads a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: #eef4ff;
+      transition: background 0.2s;
+    }
+
+    .downloads a:hover {
+      background: #dce8ff;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .selector {
+        height: auto;
+        margin-top: 40px;
+      }
+
+      .selector button {
+        font-size: 1rem;
+        padding: 12px 20px;
+      }
+
+      .video-card {
+        border-radius: 10px;
+      }
+
+      .downloads {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .selector button {
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      .downloads a {
+        font-size: 0.9rem;
+        padding: 5px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="selector" class="selector">
+  <h2>Select Game</h2>
+  <button onclick="location.hash='archive/gopR6Cufr3'">Genshin Impact</button>
+  <button onclick="location.hash='archive/U5hbdsT9W7'">Zenless Zone Zero</button>
+  <button onclick="location.hash='archive/4ziysqXOQ8'">Honkai Star Rail</button>
+  <button onclick="location.hash='archive/5TIVvvcwtM'">Honkai Impact 3rd</button>
+</div>
+
+<div id="gallery" class="gallery" style="display:none;"></div>
+
+<script>
+  const username = "nano-shino";
+  const repo = "hyvbgarchive";
+  const branch = "master";
+
+  async function handleRoute() {
+    const path = window.location.hash.slice(1); // Get path from #
+    const selector = document.getElementById("selector");
+    const videosContainer = document.getElementById("gallery");
+
+    if (!path) {
+      // Show selector if no hash (Home)
+      selector.style.display = "flex";
+      videosContainer.style.display = "none";
+      videosContainer.innerHTML = "";
+      return;
+    }
+
+    // Show gallery
+    selector.style.display = "none";
+    videosContainer.style.display = "flex";
+    videosContainer.textContent = "Loading videos...";
+
+    const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}?ref=${branch}`;
+
+    try {
+      const res = await fetch(apiUrl);
+      const files = await res.json();
+
+      const groups = {};
+      files.toReversed().forEach(file => {
+        const match = file.name.match(/^(.*)\.([^.]+)$/);
+        if (!match) return;
+        const [_, base, ext] = match;
+        if (!groups[base]) groups[base] = [];
+        groups[base].push({ ext, file });
+      });
+
+      videosContainer.innerHTML = "";
+
+      for (const base in groups) {
+        const formats = groups[base];
+        const videoFile = formats.find(f => ["webm", "mp4"].includes(f.ext.toLowerCase()));
+        if (!videoFile) continue; // skip non-video bases
+
+        const thumbnailFile = formats.find(f => ["jpg", "jpeg", "png", "webp"].includes(f.ext.toLowerCase()));
+        const videoUrl = `https://cdn.jsdelivr.net/gh/${username}/${repo}/${path}/${videoFile.file.name}`;
+        const thumbnailUrl = thumbnailFile
+          ? `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${path}/${thumbnailFile.file.name}`
+          : ""; // fallback if no thumbnail found
+
+        const card = document.createElement("div");
+        card.className = "video-card";
+
+        const video = document.createElement("video");
+        video.src = videoUrl;
+        video.preload = "auto";
+        video.poster = thumbnailUrl;
+        video.controls = false;
+        video.muted = true;         // browsers require muted autoplay
+        video.playsInline = true;   // important for mobile
+        video.loop = true;
+        video.controls = false;
+
+        const downloads = document.createElement("div");
+        downloads.className = "downloads";
+
+        formats.forEach(({ ext, file }) => {
+          if (!["webm", "mp4"].includes(ext)) return;
+
+          const link = document.createElement("a");
+          link.href = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${path}/${file.name}`;
+          link.download = file.name;
+          link.textContent = ext.toUpperCase();
+          downloads.appendChild(link);
+        });
+
+        card.appendChild(video);
+        card.appendChild(downloads);
+        videosContainer.appendChild(card);
+      }
+
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            const video = entry.target;
+
+            if (entry.isIntersecting) {
+              // Wait for video to be fully loaded before playing
+              if (video.readyState >= 4) {
+                // 4 = HAVE_ENOUGH_DATA (fully loaded)
+                video.play().catch(() => {});
+              } else {
+                // Wait until video is fully buffered
+                const onCanPlayThrough = () => {
+                  video.play().catch(() => {});
+                  video.removeEventListener("canplaythrough", onCanPlayThrough);
+                };
+                video.addEventListener("canplaythrough", onCanPlayThrough);
+              }
+            } else {
+              video.pause();
+            }
+          });
+        },
+        {
+          threshold: 0.6 // play when at least 60% visible
+        }
+      );
+
+      document.querySelectorAll("video").forEach(video => observer.observe(video));
+
+      if (Object.keys(groups).length === 0)
+        videosContainer.textContent = "No video files found.";
+    } catch (err) {
+      videosContainer.textContent = "Error loading videos.";
+      console.error(err);
+    }
+  }
+
+  // Listen for back/forward navigation and initial load
+  window.addEventListener("hashchange", handleRoute);
+  window.addEventListener("load", handleRoute);
+
+  document.addEventListener("click", e => {
+    if (e.target.tagName === "VIDEO") {
+      const video = e.target;
+
+      // Toggle controls on single tap or click
+      video.controls = !video.controls;
+
+      // Optional: auto-hide controls after a few seconds
+      if (video.controls) {
+        clearTimeout(video._hideControlsTimeout);
+        video._hideControlsTimeout = setTimeout(() => {
+          video.controls = false;
+        }, 4000); // hide after 4 seconds
+      }
+    }
+  });
+</script>
+</body>
+</html>
