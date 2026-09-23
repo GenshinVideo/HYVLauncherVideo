@@ -10,7 +10,7 @@ from datetime import datetime, UTC
 from urllib.parse import urlparse
 
 GAME_IDS = ["4ziysqXOQ8", "gopR6Cufr3", "U5hbdsT9W7"]
-JSON_URL = "https://sg-hyp-api.hoyoverse.com/hyp/hyp-connect/api/getAllGameBasicInfo?launcher_id=VYTpXlbWo8&language=en-us"
+JSON_URL = "https://sg-hyp-api.hoyoverse.com/hyp/hyp-connect/api/getAllGameBasicInfo?launcher_id=VYTpXlbWo8&language=ja-jp"
 SAVE_DIR = "archive"
 STATE_FILE = "last_check.json"
 EXCLUDED_GAME_IDS = {
@@ -74,11 +74,11 @@ def download_video(game_id, video_url, thumbnail_url):
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
 
-    process_video(filename)
+    process_video(filepath)
     print(f"Saved: {filename}")
 
-def process_video(filename):
-    if not filename.endswith(".webm"):
+def process_video(filepath):
+    if filepath.suffix.lower() != ".webm":
         return
 
     if shutil.which("ffmpeg") is None:
@@ -89,7 +89,7 @@ def process_video(filename):
         subprocess.run(
             [
                 "ffmpeg",
-                "-i", filename,
+                "-i", str(filepath),
                 "-c:v", "libx264",
                 "-profile:v", "high",
                 "-level", "4.0",
@@ -97,7 +97,7 @@ def process_video(filename):
                 "-preset", "medium",
                 "-crf", "23",
                 "-y",
-                filename.replace(".webm", ".mp4"),
+                str(filepath.with_suffix(".mp4")),
             ],
             check=True
         )
