@@ -180,10 +180,14 @@
     videosContainer.textContent = "Loading videos...";
 
     const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}?ref=${branch}`;
-
+    
     try {
       const res = await fetch(apiUrl);
       const files = await res.json();
+    
+      const stateRes = await fetch("./last_check.json");
+      const state = await stateRes.json();
+      const officialUrls = state[path.split("/")[1]]?.video_urls || [];
 
       const groups = {};
       files.toReversed().forEach(file => {
@@ -225,13 +229,27 @@
 
         formats.forEach(({ ext, file }) => {
           if (!["webm", "mp4"].includes(ext)) return;
-
+        
           const link = document.createElement("a");
           link.href = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${path}/${file.name}`;
           link.download = file.name;
           link.textContent = ext.toUpperCase();
           downloads.appendChild(link);
         });
+        
+        const videoUrlWithoutDate = videoFile.file.name
+          .replace(/^\d{8}_/, "")
+          .replace(/\.mp4$/i, ".webm");
+        const officialUrl = officialUrls.find(url => url.endsWith("/" + videoUrlWithoutDate));
+        
+        if (officialUrl) {
+          const link = document.createElement("a");
+          link.href = officialUrl;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "OFFICIAL";
+          downloads.appendChild(link);
+        }
 
         card.appendChild(video);
         card.appendChild(downloads);
