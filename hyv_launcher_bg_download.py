@@ -66,11 +66,11 @@ def download_video(game_id, video_url, thumbnail_url):
                 f.write(chunk)
 
     thumbnail_extension = pathlib.Path(urlparse(thumbnail_url).path).suffix
-    filepath = filepath.with_suffix(thumbnail_extension)
-    print(f"Downloading thumbnail: {thumbnail_url} to {filepath}")
+    thumbnail_filepath = filepath.with_suffix(thumbnail_extension)
+    print(f"Downloading thumbnail: {thumbnail_url} to {thumbnail_filepath}")
     with requests.get(thumbnail_url, stream=True) as r:
         r.raise_for_status()
-        with open(filepath, "wb") as f:
+        with open(thumbnail_filepath, "wb") as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
 
