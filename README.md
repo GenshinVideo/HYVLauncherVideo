@@ -1,4 +1,3 @@
-markdown
 Website: [https://genshinvideo.github.io/HYVLauncherVideo](https://genshinvideo.github.io/HYVLauncherVideo)
 
 This repo automatically checks the HoYoverse launcher for new animated backgrounds and saves them to:
