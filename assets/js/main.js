@@ -25,7 +25,7 @@ const games = [
     id: "hi3",
     name: "崩壊3rd",
     nameEn: "Honkai Impact 3rd",
-    path: "archive/5TIVvvcwtM"
+    path: "archive/g0mMIvshDb"
   }
 ];
 
