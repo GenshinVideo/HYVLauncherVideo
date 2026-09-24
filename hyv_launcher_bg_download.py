@@ -9,12 +9,12 @@ import os
 from datetime import datetime, UTC
 from urllib.parse import urlparse
 
-GAME_IDS = ["4ziysqXOQ8", "gopR6Cufr3", "U5hbdsT9W7"]
+GAME_IDS = ["gopR6Cufr3", "4ziysqXOQ8", "U5hbdsT9W7", "g0mMIvshDb"]
 JSON_URL = "https://sg-hyp-api.hoyoverse.com/hyp/hyp-connect/api/getAllGameBasicInfo?launcher_id=VYTpXlbWo8&language=ja-jp"
 SAVE_DIR = "archive"
 STATE_FILE = "last_check.json"
 EXCLUDED_GAME_IDS = {
-    "bxPTXSET5t", "g0mMIvshDb", "uxB4MC7nzC", "wkE5P5WsIf"  # other HK 3 regions
+    "5TIVvvcwtM", "bxPTXSET5t", "uxB4MC7nzC", "wkE5P5WsIf"  # other HK 3 regions
 }
 
 os.makedirs(SAVE_DIR, exist_ok=True)
