@@ -1,0 +1,370 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #8a8a8a;
+  --accent-rgb: 138, 138, 138;
+  --background: #08090b;
+  --surface: #111317;
+  --surface-light: #181b20;
+  --text: #f5f5f5;
+  --text-muted: #8e939c;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(var(--accent-rgb), 0.14), transparent 45%),
+    var(--background);
+  color: var(--text);
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* ========================================
+   Header
+======================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background: rgba(8, 9, 11, 0.82);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.header-inner {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  height: 64px;
+  gap: 12px;
+}
+
+.site-title-main {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-title-sub {
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ========================================
+   Game Navigation
+======================================== */
+
+.game-nav {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+}
+
+.game-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.game-nav button {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.game-nav button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.game-nav button.active {
+  color: var(--text);
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.game-nav button.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.7);
+}
+
+/* ========================================
+   Main
+======================================== */
+
+main {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: 54px 28px 80px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  width: 100%;
+}
+
+/* ========================================
+   Game Hero
+======================================== */
+
+.game-hero {
+  grid-column: 1 / -1;
+  padding: 12px 0 28px;
+}
+
+.game-label {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.game-title {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.game-description {
+  margin: 16px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ========================================
+   Video Cards
+======================================== */
+
+.video-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--accent-rgb), 0.35);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+.video-card:first-of-type {
+  grid-column: 1 / -1;
+}
+
+.video-card video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+}
+
+.video-card:first-of-type video {
+  aspect-ratio: 21 / 9;
+}
+
+.downloads {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 12px 14px;
+  background: var(--surface);
+}
+
+.downloads a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-light);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.downloads a:hover {
+  color: var(--text);
+  border-color: rgba(var(--accent-rgb), 0.45);
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.downloads a:last-child {
+  color: var(--accent);
+}
+
+/* ========================================
+   Loading / Error
+======================================== */
+
+.gallery.loading,
+.gallery.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading-indicator::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: loading-spin 0.8s linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   Game Themes
+======================================== */
+
+body[data-game="genshin"] {
+  --accent: #78c8ff;
+  --accent-rgb: 120, 200, 255;
+}
+
+body[data-game="starrail"] {
+  --accent: #b895ff;
+  --accent-rgb: 184, 149, 255;
+}
+
+body[data-game="zzz"] {
+  --accent: #ffb347;
+  --accent-rgb: 255, 179, 71;
+}
+
+body[data-game="hi3"] {
+  --accent: #ff78b7;
+  --accent-rgb: 255, 120, 183;
+}
+
+/* ========================================
+   Responsive
+======================================== */
+
+@media (max-width: 900px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .video-card:first-of-type {
+    grid-column: auto;
+  }
+
+  .video-card:first-of-type video {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-inner {
+    padding: 0 14px;
+  }
+
+  .site-title {
+    height: 56px;
+  }
+
+  .site-title-sub {
+    display: none;
+  }
+
+  .game-nav button {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  main {
+    padding: 36px 14px 60px;
+  }
+
+  .game-hero {
+    padding-bottom: 22px;
+  }
+
+  .game-title {
+    font-size: 34px;
+  }
+
+  .game-description {
+    font-size: 13px;
+  }
+
+  .gallery {
+    gap: 14px;
+  }
+
+  .video-card {
+    border-radius: 10px;
+  }
+}
